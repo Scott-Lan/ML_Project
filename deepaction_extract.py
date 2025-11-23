@@ -12,6 +12,27 @@ VAL_SIZE = 0.1
 TEST_SIZE = 0.1
 
 
+'''
+This module is used to extract frames from a video and store them in a list.
+it takes sample_size as an argument and returns that many frames evenly spaced from each other throughout the video.
+the frames are stored in a list and can be accessed as a property of the Video class.
+the frames are pulled lazily when the selected_frames property is accessed.
+
+
+
+Stores videos in a list and assigns them to the training, validation, and test sets.
+uses a seed to ensure that the videos are assigned to the training, validation, and test sets in the same way each time for reproducibility.
+
+call the Model_Data class to get the training, validation, and test sets.
+
+example: 
+model = Model_Data(0, model_path)
+training_videos = model.get_training_videos()
+validation_videos = model.get_validation_videos()
+test_videos = model.get_test_videos()
+'''
+
+
 class Video:
     # class to represent a single video file.
     
@@ -44,11 +65,10 @@ class Video:
         frame_list = []
         for i in range(sample_size):
             frame_index = int(i * step)
-            video_capture.set(cv2.CAP_PROP_POS_FRAMES, frame_index)
-            ret, frame = video_capture.read()
-            if not ret:
-                break
-            frame_list.append(frame)
+            video_capture.set(cv2.CAP_PROP_POS_FRAMES, frame_index) # set the position of the video to the frame index
+            ret, frame = video_capture.read() # read the frame
+            if ret: # if the frame was read successfully, add it to the list
+                frame_list.append(frame)
         video_capture.release()
         return frame_list
     
@@ -64,15 +84,17 @@ class Model_Data:
         self.video_paths = self.assign_videos(model_path)
         
     
-    def assign_videos(self, path = DATASET_PATH):
+    def assign_videos(self, path):
         
-        random.seed(time.time())
+        random.seed(42)
         
         
         video_paths = []
         # assign the videos to the training, validation, and test sets
         for file in os.listdir(path):
-            video_paths.append(os.path.join(path, file))
+            # only add video files
+            if file.lower().endswith(('.mp4', '.avi', '.mov', '.mkv', '.flv', '.wmv')):
+                video_paths.append(os.path.join(path, file))
         
         # Create a copy and shuffle randomly
         shuffled_videos = video_paths.copy()
@@ -84,14 +106,17 @@ class Model_Data:
         val_count = int(total_videos * VAL_SIZE)
         #test_count = remaining videos
         
-        # Assign videos to splits using enumerate
+        # Assign videos to splits using enumerate - create Video objects
         for i, video_path in enumerate(shuffled_videos):
+            # Create Video object (frames loaded lazily)
+            video = Video(video_path, self.model_index, self.model_name)
+            
             if i < train_count:
-                self.training_videos.append(video_path)
+                self.training_videos.append(video)
             elif i < train_count + val_count:
-                self.validation_videos.append(video_path)
+                self.validation_videos.append(video)
             else:
-                self.test_videos.append(video_path)
+                self.test_videos.append(video)
             
     def get_training_videos(self):
         return self.training_videos
