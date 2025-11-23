@@ -116,12 +116,5 @@ class Model_Data:
             raise ValueError(f"Invalid split: {split}")
         
     def get_video_set_size(self, split):
-        if split == 'training':
-            return len(self.training_videos)
-        elif split == 'validation':
-            return len(self.validation_videos)
-        elif split == 'test':
-            return len(self.test_videos)
-        else:
-            raise ValueError(f"Invalid split: {split}")
+        return len(self.get_video_set(split))
  
