@@ -1,4 +1,4 @@
-# name: Scott Landry
+""" # name: Scott Landry
 
 import os
 import random
@@ -143,3 +143,5 @@ class Model_Data:
     def get_video_set_size(self, split):
         return len(self.get_video_set(split))
  
+        
+        """
