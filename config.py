@@ -20,7 +20,7 @@ NUM_FRAMES = 20  # number of frames to sample per video
 # Training hyperparameters
 BATCH_SIZE = 16  # batch size - smaller batches often improve accuracy (8 is good) (16 starts getting hungery for memory - 12gb vram)
 LEARNING_RATE = 0.0008  # learning rate - lower more stable, higher is faster
-NUM_EPOCHS = 10  # number of training epochs - more epochs can improve accuracy ------ 10 works well
+NUM_EPOCHS = 10  # number of training epochs - more epochs can improve accuracy ------ 10 works well but long
 
 # Reproducibility
 #RANDOM_SEED = 42  # random seed for reproducibility

@@ -41,7 +41,7 @@ class ClipData(Dataset):
         label = self.labels[i]
 
         # using the Video class from deepaction_extract.py 
-        temp_vid = Video(path, label, "whatever", sample_size=self.frames)  # temporary Video object to load frames
+        temp_vid = Video(path, label, "temp", sample_size=self.frames)  # temporary Video object to load frames
         bgr_frames = temp_vid.selected_frames  # list of frames in BGR format (numpy arrays)
 
         tensors = []
